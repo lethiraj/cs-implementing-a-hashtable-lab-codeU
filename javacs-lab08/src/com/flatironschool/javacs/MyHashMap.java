@@ -3,12 +3,15 @@
  */
 package com.flatironschool.javacs;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Implementation of a HashMap using a collection of MyLinearMap and
- * resizing when there are too many entries.
+ * Implementation of a HashMap using a collection of MyLinearMap and resizing
+ * when there are too many entries.
  * 
  * @author downey
  * @param <K>
@@ -16,16 +19,17 @@ import java.util.Map;
  *
  */
 public class MyHashMap<K, V> extends MyBetterMap<K, V> implements Map<K, V> {
-	
+
 	// average number of entries per map before we rehash
 	protected static final double FACTOR = 1.0;
 
 	@Override
 	public V put(K key, V value) {
 		V oldValue = super.put(key, value);
-		
-		//System.out.println("Put " + key + " in " + map + " size now " + map.size());
-		
+
+		// System.out.println("Put " + key + " in " + map + " size now " +
+		// map.size());
+
 		// check if the number of elements per map exceeds the threshold
 		if (size() > maps.size() * FACTOR) {
 			rehash();
@@ -40,8 +44,20 @@ public class MyHashMap<K, V> extends MyBetterMap<K, V> implements Map<K, V> {
 	 * 
 	 */
 	protected void rehash() {
-        // TODO: fill this in.
-        throw new UnsupportedOperationException();
+		// TODO: fill this in.
+		// throw new UnsupportedOperationException();
+		int currentSize = maps.size();
+
+		List<Map.Entry<K, V>> allEntries = new ArrayList<>();
+		for (MyLinearMap<K, V> m : maps) {
+			for (Map.Entry<K, V> entry : m.getEntries()) {
+				allEntries.add(entry);
+				}
+			}
+		makeMaps(2 * currentSize);
+		for (Map.Entry<K, V> entry : allEntries) {
+		this.put(entry.getKey(), entry.getValue());
+		}
 	}
 
 	/**
@@ -49,7 +65,7 @@ public class MyHashMap<K, V> extends MyBetterMap<K, V> implements Map<K, V> {
 	 */
 	public static void main(String[] args) {
 		Map<String, Integer> map = new MyHashMap<String, Integer>();
-		for (int i=0; i<10; i++) {
+		for (int i = 0; i < 10; i++) {
 			map.put(new Integer(i).toString(), i);
 		}
 		Integer value = map.get("3");
